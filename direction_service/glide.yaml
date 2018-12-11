@@ -1,0 +1,8 @@
+package: direction_service
+import:
+- package: github.com/gorilla/handlers
+  version: v1.4.0
+- package: github.com/gorilla/mux
+  version: v1.6.2
+- package: github.com/joho/godotenv
+  version: v1.3.0

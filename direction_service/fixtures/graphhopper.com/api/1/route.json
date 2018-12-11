@@ -1,0 +1,38 @@
+{
+  "hints": {
+    "visited_nodes.average": "138.0",
+    "visited_nodes.sum": "138"
+  },
+  "paths": [
+    {
+      "distance": 12135.455,
+      "weight": 1284.829521,
+      "time": 1284809,
+      "transfers": 0,
+      "snapped_waypoints": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            37.621972,
+            55.729059
+          ],
+          [
+            37.581549,
+            55.808252
+          ]
+        ]
+      },
+      "points_order": [
+        0,
+        1
+      ]
+    }
+  ],
+  "info": {
+    "copyrights": [
+      "GraphHopper",
+      "OpenStreetMap contributors"
+    ],
+    "took": 9
+  }
+}
