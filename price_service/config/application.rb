@@ -16,6 +16,7 @@ require "action_controller/railtie"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+Dotenv::Railtie.load
 
 module PriceService
   class Application < Rails::Application
@@ -31,5 +32,6 @@ module PriceService
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.direction_service_url = ENV['DIRECTION_SERVICE_URL']
   end
 end
