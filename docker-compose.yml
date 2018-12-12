@@ -8,6 +8,7 @@ services:
       PORT: "3600"
       GRAPHHOPPER_URL: "https://graphhopper.com/api/1/route"
       GRAPHHOPPER_KEY: "5358b12c-dd61-488f-94a8-5ee433d2bd37"
+      REDIS_URL: redis:6379
   price_service:
     build:
       context: ./price_service
@@ -18,3 +19,5 @@ services:
       PORT: "3300"
     ports:
       - "3300:3300"
+  redis:
+    image: redis:latest
