@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  direction_service:
+    build:
+      context: ./direction_service
+    environment:
+      PORT: "3600"
+      GRAPHHOPPER_URL: "https://graphhopper.com/api/1/route"
+      GRAPHHOPPER_KEY: "5358b12c-dd61-488f-94a8-5ee433d2bd37"
+  price_service:
+    build:
+      context: ./price_service
+    environment:
+      DIRECTION_SERVICE_URL: "http://direction_service:3600"
+      SECRET_KEY_BASE: "test"
+      RAILS_LOG_TO_STDOUT: "true"
+      PORT: "3300"
+    ports:
+      - "3300:3300"

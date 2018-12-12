@@ -1,0 +1,41 @@
+AllCops:
+  TargetRubyVersion: 2.5
+  DisplayCopNames: true
+
+Rails:
+  Enabled: true
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/Documentation:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+DotPosition:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+LineLength:
+  Max: 120
+
+CyclomaticComplexity:
+  Max: 12
+
+Style/SignalException:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
