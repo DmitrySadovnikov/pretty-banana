@@ -25,10 +25,8 @@ type path struct {
 	Time     int64   `json:"time"`
 }
 
-type paths []path
-
 type graphhopperResponse struct {
-	Paths paths `json:"paths"`
+	Paths []path `json:"paths"`
 }
 
 func (_ DirectionsCalculateService) Call(startPointLat, startPointLng, endPointLat, endPointLng float64) Result {

@@ -1,14 +1,15 @@
 module Price
   class Calculate < ActiveInteraction::Base
-    TARIFF = {
-      currency: 'RUB',
-      min_price: 500.0,
-      order_price: 250.0,
-      minute_price: 20.0,
-      km_price: 20.0
-    }.freeze
+    DEFAULT_TARIFF = YAML.load_file('db/data/tariff.yml').deep_symbolize_keys
 
     private
+
+    hash :tariff, default: {} do
+      decimal :min_price,     default: DEFAULT_TARIFF[:min_price]
+      decimal :order_price,   default: DEFAULT_TARIFF[:order_price]
+      decimal :minute_price,  default: DEFAULT_TARIFF[:minute_price]
+      decimal :km_price,      default: DEFAULT_TARIFF[:km_price]
+    end
 
     hash :start_point do
       decimal :lat
@@ -22,12 +23,12 @@ module Price
 
     def execute
       result =
-        TARIFF[:order_price] +
-        TARIFF[:minute_price] * time_in_minutes +
-        TARIFF[:km_price] * distance_in_km
+        tariff[:order_price] +
+        tariff[:minute_price] * time_in_minutes +
+        tariff[:km_price] * distance_in_km
 
       result = result.round(0)
-      result < TARIFF[:min_price] ? TARIFF[:min_price] : result
+      result < tariff[:min_price] ? tariff[:min_price] : result
     end
 
     def direction_service_response

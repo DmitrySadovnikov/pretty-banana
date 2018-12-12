@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Price::Calculate do
   subject { described_class.run!(params) }
 
+  let(:tariff) { nil }
   let(:params) do
     {
       start_point: {
@@ -12,7 +13,8 @@ describe Price::Calculate do
       end_point: {
         lat: 55.808116,
         lng: 37.581609
-      }
+      },
+      tariff: tariff
     }
   end
 
@@ -25,7 +27,24 @@ describe Price::Calculate do
     allow(Direction::Api).to receive(:calculate).and_return(result)
   end
 
-  it 'returns price' do
-    expect(subject).to eq(4775.to_d)
+  context 'when default tariff' do
+    it 'returns price' do
+      expect(subject).to eq(4775.to_d)
+    end
+  end
+
+  context 'when custom tariff' do
+    let(:tariff) do
+      {
+        min_price: 500.0,
+        order_price: 250.0,
+        minute_price: 20.0,
+        km_price: 30.0
+      }
+    end
+
+    it 'returns price' do
+      expect(subject).to eq(4897.to_d)
+    end
   end
 end
