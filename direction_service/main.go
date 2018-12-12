@@ -2,9 +2,9 @@ package main
 
 import (
 	"direction_service/app/controllers"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
-	"github.com/joho/godotenv"
 )
 
 func init() {

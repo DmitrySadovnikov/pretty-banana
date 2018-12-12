@@ -1,8 +1,14 @@
 package: direction_service
 import:
+- package: github.com/go-redis/cache
+  version: v6.3.5
+- package: github.com/go-redis/redis
+  version: v6.14.2
 - package: github.com/gorilla/handlers
   version: v1.4.0
 - package: github.com/gorilla/mux
   version: v1.6.2
 - package: github.com/joho/godotenv
   version: v1.3.0
+- package: github.com/vmihailenco/msgpack
+  version: v4.0.1
