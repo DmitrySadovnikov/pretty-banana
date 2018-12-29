@@ -3,22 +3,19 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/cache"
-	"github.com/go-redis/redis"
-	"github.com/vmihailenco/msgpack"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
+	p "direction_service/app/proto"
+
+	"github.com/go-redis/cache"
+	"github.com/go-redis/redis"
+	"github.com/vmihailenco/msgpack"
 )
 
 type DirectionsCalculateService struct{}
-
-type Result struct {
-	Distance float64 `json:"distance"`
-	Time     int64   `json:"time"`
-}
 
 type path struct {
 	Distance float64 `json:"distance"`
@@ -29,19 +26,25 @@ type graphhopperResponse struct {
 	Paths []path `json:"paths"`
 }
 
-func (_ DirectionsCalculateService) Call(startPointLat, startPointLng, endPointLat, endPointLng float64) Result {
+func (_ DirectionsCalculateService) Call(request *p.Calculate_Request) *p.Calculate_Response {
 	redisCodec := redisCodec()
-	cacheKey := fmt.Sprintf("%f,%f,%f,%f", startPointLat, startPointLng, endPointLat, endPointLng)
+	cacheKey := fmt.Sprintf(
+		"%f,%f,%f,%f",
+		request.StartPoint.Lat,
+		request.StartPoint.Lng,
+		request.EndPoint.Lat,
+		request.EndPoint.Lng,
+	)
 
 	if result, ok := fetchCachedResult(redisCodec, cacheKey); ok {
 		return result
 	}
-	result := fetchResult(startPointLat, startPointLng, endPointLat, endPointLng)
+	result := fetchResult(request)
 	go writeResultToCache(redisCodec, cacheKey, result)
 	return result
 }
 
-func fetchResult(startPointLat, startPointLng, endPointLat, endPointLng float64) Result {
+func fetchResult(request *p.Calculate_Request) *p.Calculate_Response {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", os.Getenv("GRAPHHOPPER_URL"), nil)
 
@@ -54,8 +57,8 @@ func fetchResult(startPointLat, startPointLng, endPointLat, endPointLng float64)
 
 	q := req.URL.Query()
 	q.Add("key", os.Getenv("GRAPHHOPPER_KEY"))
-	q.Add("point", fmt.Sprintf("%f,%f", startPointLat, startPointLng))
-	q.Add("point", fmt.Sprintf("%f,%f", endPointLat, endPointLng))
+	q.Add("point", fmt.Sprintf("%f,%f", request.StartPoint.Lat, request.StartPoint.Lng))
+	q.Add("point", fmt.Sprintf("%f,%f", request.EndPoint.Lat, request.EndPoint.Lng))
 	q.Add("vehicle", "car")
 	q.Add("calc_points", "false")
 	q.Add("points_encoded", "false")
@@ -79,7 +82,7 @@ func fetchResult(startPointLat, startPointLng, endPointLat, endPointLng float64)
 		panic(err)
 	}
 
-	return Result{
+	return &p.Calculate_Response{
 		Distance: graphhopperResponse.Paths[0].Distance,
 		Time:     graphhopperResponse.Paths[0].Time,
 	}
@@ -106,8 +109,8 @@ func redisCodec() *cache.Codec {
 	return codec
 }
 
-func fetchCachedResult(codec *cache.Codec, key string) (Result, bool) {
-	var result Result
+func fetchCachedResult(codec *cache.Codec, key string) (*p.Calculate_Response, bool) {
+	var result *p.Calculate_Response
 	err := codec.Get(key, &result)
 
 	if err == nil {
@@ -118,7 +121,7 @@ func fetchCachedResult(codec *cache.Codec, key string) (Result, bool) {
 	return result, false
 }
 
-func writeResultToCache(codec *cache.Codec, key string, result Result) {
+func writeResultToCache(codec *cache.Codec, key string, result *p.Calculate_Response) {
 	codec.Set(&cache.Item{
 		Key:        key,
 		Object:     result,

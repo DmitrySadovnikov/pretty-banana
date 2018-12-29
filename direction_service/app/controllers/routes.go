@@ -2,14 +2,15 @@ package controllers
 
 import (
 	"context"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 type webServer struct {
@@ -17,7 +18,7 @@ type webServer struct {
 }
 
 func NewServer() *webServer {
-	s := &webServer{Server: http.Server{Addr: ":" + os.Getenv("PORT")}}
+	s := &webServer{Server: http.Server{Addr: os.Getenv("PORT")}}
 	router := Router()
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 	s.Server.Handler = loggedRouter
@@ -27,7 +28,6 @@ func NewServer() *webServer {
 func Router() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("Hello\n")) })
-	r.HandleFunc("/api/v1/directions/calculate", DirectionsCalculate).Methods("POST")
 	return r
 }
 

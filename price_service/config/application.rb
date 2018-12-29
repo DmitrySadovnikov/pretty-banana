@@ -33,5 +33,6 @@ module PriceService
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.direction_service_url = ENV['DIRECTION_SERVICE_URL']
+    config.grpc_server_url = ENV['GRPC_SERVER_URL']
   end
 end
