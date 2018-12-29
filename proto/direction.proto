@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package DirectionPb;
+
+service Direction {
+    rpc Calculate (Calculate.Request) returns (Calculate.Response);
+}
+
+message Calculate {
+    message Request {
+        Point startPoint = 1;
+        Point endPoint = 2;
+    }
+
+    message Response {
+        double distance = 1;
+        int64 time = 2;
+    }
+
+    message Point {
+        double lat = 1;
+        double lng = 2;
+    }
+}
